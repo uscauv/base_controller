@@ -11,8 +11,8 @@ class BaseController():
     def __init__(self):
         self.port = rospy.get_param("/base_controller/port", 0)
 
-        rospy.init_node('listener', anonymous=True)
-        rospy.Subscriber("/cmd_vel", Twist, self.callback)
+        rospy.init_node('base_controller', anonymous=True)
+        rospy.Subscriber("/cmd_vel_raw", Twist, self.callback)
         rospy.spin()
 
     def callback(self, data):
@@ -39,12 +39,12 @@ class BaseController():
         ser.write("6 " + mt6)
 
 
-def listener():
+def base_controller():
     BaseController()
 
 
 if __name__ == '__main__':
     try:
-        listener()
+        base_controller()
     except rospy.ROSInterruptException:
         pass
