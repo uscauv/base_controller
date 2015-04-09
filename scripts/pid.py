@@ -49,7 +49,7 @@ class PidControllerNode():
 
         rospy.init_node('base_pid', anonymous=True)
         rospy.Subscriber("/cmd_vel", Twist, self.cmd_callback)
-        rospy.Subscriber("nav_filtered_signals/filter_stack", Imu, self.imu_callback())
+        rospy.Subscriber("nav_filtered_signals/filter_stack", Imu, self.imu_callback)
         self.pub = rospy.Publisher('/cmd_vel_raw', Twist, queue_size=10)
         rospy.spin()
 
