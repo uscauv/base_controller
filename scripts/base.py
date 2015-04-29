@@ -9,7 +9,8 @@ from geometry_msgs.msg import Twist, Vector3
 
 class BaseController():
     def __init__(self):
-        self.port = rospy.get_param("/base_controller/port", 0)
+        port = rospy.get_param("/base_controller/port", '/dev/ttyACM0')
+        self.serial = serial.Serial(port, 9600, timeout=1)
 
         rospy.init_node('base_controller', anonymous=True)
         rospy.Subscriber("/cmd_vel_raw", Twist, self.callback)
@@ -31,7 +32,6 @@ class BaseController():
         mt5 = liny  # y1 motor
         mt6 = liny  # y2 motor
         print(mt1, mt2, mt3, mt4, mt5, mt6)
-        ser = serial.Serial(port, 9600, timeout=1)
         '''
         ser.write("1 " + mt1*mutliplier)
         ser.write("2 " + mt2*mutliplier)
@@ -40,8 +40,8 @@ class BaseController():
         ser.write("5 " + mt5*mutliplier)
         ser.write("6 " + mt6*mutliplier)
         '''
-        ser.write("hello");
-        ser.close();
+        self.serial.write("hello");
+        self.serial.flush();
         #s = ser.read(2)
         #print(s)
 
