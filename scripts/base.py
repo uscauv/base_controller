@@ -31,7 +31,7 @@ class BaseController():
         mt4 = linz - angx  # z2 motor
         mt5 = liny  # y1 motor
         mt6 = liny  # y2 motor
-        print(mt1, mt2, mt3, mt4, mt5, mt6)
+        #print(mt1, mt2, mt3, mt4, mt5, mt6)
         '''
         ser.write("1 " + mt1*mutliplier)
         ser.write("2 " + mt2*mutliplier)

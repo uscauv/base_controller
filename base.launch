@@ -1,0 +1,5 @@
+<launch>
+  <node name="base" pkg="base_controller" type="base.py" />
+  <node name="pid" pkg="base_controller" type="pid.py" />
+  <rosparam command="load" file="base_controller/params.yaml" />
+</launch>
