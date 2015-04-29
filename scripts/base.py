@@ -16,6 +16,7 @@ class BaseController():
         rospy.spin()
 
     def callback(self, data):
+    	mutliplier = 400;
         linx = data.linear.x
         liny = data.linear.y
         linz = data.linear.z
@@ -30,13 +31,20 @@ class BaseController():
         mt5 = liny  # y1 motor
         mt6 = liny  # y2 motor
         print(mt1, mt2, mt3, mt4, mt5, mt6)
-        ser = Serial(port, 9600, timeout=1)
-        ser.write("1 " + mt1)
-        ser.write("2 " + mt2)
-        ser.write("3 " + mt3)
-        ser.write("4 " + mt4)
-        ser.write("5 " + mt5)
-        ser.write("6 " + mt6)
+        ser = serial.Serial(port, 9600, timeout=1)
+        '''
+        ser.write("1 " + mt1*mutliplier)
+        ser.write("2 " + mt2*mutliplier)
+        ser.write("3 " + mt3*mutliplier)
+        ser.write("4 " + mt4*mutliplier)
+        ser.write("5 " + mt5*mutliplier)
+        ser.write("6 " + mt6*mutliplier)
+        '''
+        ser.write("hello");
+        ser.close();
+        #s = ser.read(2)
+        #print(s)
+
 
 
 def base_controller():

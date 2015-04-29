@@ -5,7 +5,7 @@ from geometry_msgs.msg import Twist, Vector3
 
 
 def talker():
-    pub = rospy.Publisher('/cmd_vel', Twist, queue_size=10)
+    pub = rospy.Publisher('/cmd_vel_raw', Twist, queue_size=10)
     rospy.init_node('talker', anonymous=True)
     rate = rospy.Rate(10)  # 10hz
     while not rospy.is_shutdown():
