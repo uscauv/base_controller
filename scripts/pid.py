@@ -48,8 +48,11 @@ class PidControllerNode():
         self.command = None
 
         rospy.init_node('base_pid', anonymous=True)
+        # listen to velocity command requests
         rospy.Subscriber("/cmd_vel", Twist, self.cmd_callback)
+        # listen to IMU for feedback
         rospy.Subscriber("/nav_filtered_signals/filter_stack", Imu, self.imu_callback)
+        # send commands to base controller
         self.pub = rospy.Publisher('/cmd_vel_raw', Twist, queue_size=10)
         rospy.spin()
 
