@@ -17,7 +17,7 @@ class BaseController():
         rospy.spin()
 
     def callback(self, data):
-    	mutliplier = 200;
+        multiplier = 200;
         linx = data.linear.x
         liny = data.linear.y
         linz = data.linear.z
@@ -32,13 +32,13 @@ class BaseController():
         mt5 = liny  # y1 motor
         mt6 = -liny  # y2 motor
         #print(str(mt1, mt2, mt3, mt4, mt5, mt6)
-        self.serial.write(b"1 " + str(mt1*mutliplier) + "\r\n")
-        self.serial.write(b"2 " + str(mt2*mutliplier) + "\r\n")
-        self.serial.write(b"3 " + str(mt3*mutliplier) + "\r\n")
-        self.serial.write(b"4 " + str(mt4*mutliplier) + "\r\n")
-        self.serial.write(b"5 " + str(mt5*mutliplier) + "\r\n")
-        self.serial.write(b"6 " + str(mt6*mutliplier) + "\r\n")
-        print("6 "+ str(mt6*mutliplier));
+        self.serial.write(b"1 " + str(mt1*multiplier) + "\r\n")
+        self.serial.write(b"2 " + str(mt2*multiplier) + "\r\n")
+        self.serial.write(b"3 " + str(mt3*multiplier) + "\r\n")
+        self.serial.write(b"4 " + str(mt4*multiplier) + "\r\n")
+        self.serial.write(b"5 " + str(mt5*multiplier) + "\r\n")
+        self.serial.write(b"6 " + str(mt6*multiplier) + "\r\n")
+        print("6 "+ str(mt6*multiplier));
         #self.serial.write("hello");
         self.serial.flush();
         #s = self.serial.read(2)
