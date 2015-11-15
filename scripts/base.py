@@ -2,22 +2,22 @@
 # license removed for brevity
 
 import serial
-
+import time
 import rospy
 from geometry_msgs.msg import Twist, Vector3
 
 
 class BaseController():
     def __init__(self):
-        port = rospy.get_param("/base_controller/port", '/dev/ttyACM0')
+        port = rospy.get_param("/base_controller/port", '/dev/arduino')
         self.serial = serial.Serial(port, 9600, timeout=1)
 
         rospy.init_node('base_controller', anonymous=True)
-        rospy.Subscriber("/cmd_vel_raw", Twist, self.callback)
+        rospy.Subscriber("/cmd_vel_raw_drop", Twist, self.callback)
         rospy.spin()
 
     def callback(self, data):
-    	mutliplier = 400;
+    	mutliplier = 200;
         linx = data.linear.x
         liny = data.linear.y
         linz = data.linear.z
@@ -26,23 +26,22 @@ class BaseController():
         angz = data.angular.z
 
         mt1 = linx + angz  # x1 motor
-        mt2 = linx - angz  # x2 motor
+        mt2 = -(linx - angz)  # x2 motor
         mt3 = linz + angx  # z1 motor
         mt4 = linz - angx  # z2 motor
         mt5 = liny  # y1 motor
-        mt6 = liny  # y2 motor
-        #print(mt1, mt2, mt3, mt4, mt5, mt6)
-        '''
-        ser.write("1 " + mt1*mutliplier)
-        ser.write("2 " + mt2*mutliplier)
-        ser.write("3 " + mt3*mutliplier)
-        ser.write("4 " + mt4*mutliplier)
-        ser.write("5 " + mt5*mutliplier)
-        ser.write("6 " + mt6*mutliplier)
-        '''
-        self.serial.write("hello");
+        mt6 = -liny  # y2 motor
+        #print(str(mt1, mt2, mt3, mt4, mt5, mt6)
+        self.serial.write(b"1 " + str(mt1*mutliplier) + "\r\n")
+        self.serial.write(b"2 " + str(mt2*mutliplier) + "\r\n")
+        self.serial.write(b"3 " + str(mt3*mutliplier) + "\r\n")
+        self.serial.write(b"4 " + str(mt4*mutliplier) + "\r\n")
+        self.serial.write(b"5 " + str(mt5*mutliplier) + "\r\n")
+        self.serial.write(b"6 " + str(mt6*mutliplier) + "\r\n")
+        print("6 "+ str(mt6*mutliplier));
+        #self.serial.write("hello");
         self.serial.flush();
-        #s = ser.read(2)
+        #s = self.serial.read(2)
         #print(s)
 
 
