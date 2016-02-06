@@ -40,7 +40,7 @@ class PidController():
 
 class PidControllerNode():
     def __init__(self):
-        self.pid_ang_x = PidController(0.001, 0, 0)
+        self.pid_ang_x = PidController(1, 0, 0)
         self.pid_ang_y = PidController(0.001, 0, 0)
         self.pid_ang_z = PidController(0.001, 0, 0)
 
@@ -57,17 +57,21 @@ class PidControllerNode():
         rospy.spin()
 
     def cmd_callback(self, data):
+        print("Got command")
         self.command = data
-        self.pid_ang_x.set_setpoint(data.angular.x)
-        self.pid_ang_y.set_setpoint(data.angular.y)
-        self.pid_ang_z.set_setpoint(data.angular.z)
+        self.pid_ang_x.set_setpoint(0)
+        self.pid_ang_y.set_setpoint(0)
+        self.pid_ang_z.set_setpoint(0)
 
     def imu_callback(self, data):
+        self.command = Twist()
         # we only modify angular values because this node is simply responsible for stabilizing the sub
         # making sure that the linear velocities are also accurate is outside the scope of this node
-        self.command.angular.x = self.pid_ang_x.update(data.angular_velocity.x)
-        self.command.angular.y = self.pid_ang_y.update(data.angular_velocity.y)
-        self.command.angular.z = self.pid_ang_z.update(data.angular_velocity.z)
+        self.command.angular.x = self.pid_ang_x.update(data.orientation.x)
+        self.command.angular.y = self.pid_ang_y.update(data.orientation.y)
+        self.command.angular.z = self.pid_ang_z.update(data.orientation.z)
+
+        print("Got IMU update, publishing raw command")
 
         self.pub.publish(self.command)
 
