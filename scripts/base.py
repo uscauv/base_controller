@@ -9,11 +9,11 @@ from geometry_msgs.msg import Twist, Vector3
 
 class BaseController():
     def __init__(self):
-        port = rospy.get_param("/base_controller/port", '/dev/arduino')
+        port = rospy.get_param("/base_controller/port", '/dev/seabee/arduino')
         self.serial = serial.Serial(port, 9600, timeout=1)
 
         rospy.init_node('base_controller', anonymous=True)
-        rospy.Subscriber("/cmd_vel_raw_drop", Twist, self.callback)
+        rospy.Subscriber("/cmd_vel_raw", Twist, self.callback)
         rospy.spin()
 
     def callback(self, data):
