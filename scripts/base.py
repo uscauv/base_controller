@@ -17,7 +17,6 @@ class BaseController():
         rospy.spin()
 
     def callback(self, data):
-        multiplier = 200;
         linx = data.linear.x
         liny = data.linear.y
         linz = data.linear.z
@@ -31,19 +30,16 @@ class BaseController():
         mt4 = linz - angx  # z2 motor
         mt5 = liny  # y1 motor
         mt6 = -liny  # y2 motor
-        #print(str(mt1, mt2, mt3, mt4, mt5, mt6)
-        self.serial.write(b"1 " + str(mt1*multiplier) + "\r\n")
-        self.serial.write(b"2 " + str(mt2*multiplier) + "\r\n")
-        self.serial.write(b"3 " + str(mt3*multiplier) + "\r\n")
-        self.serial.write(b"4 " + str(mt4*multiplier) + "\r\n")
-        self.serial.write(b"5 " + str(mt5*multiplier) + "\r\n")
-        self.serial.write(b"6 " + str(mt6*multiplier) + "\r\n")
-        print("6 "+ str(mt6*multiplier));
-        #self.serial.write("hello");
-        self.serial.flush();
-        #s = self.serial.read(2)
-        #print(s)
 
+        print(str(mt1, mt2, mt3, mt4, mt5, mt6))
+
+        # start byte = 255, 0 = full reverse, 100 = stopped, 200 = full forward
+        def format_value(val):
+            # first [0, 2], then 0 to 200
+            return (val + 1) * 200
+        message = bytearray([format_value(x) for x in [mt1, mt2, mt3, mt4, mt5, mt6]])
+        self.serial.write(message)
+        self.serial.flush();
 
 
 def base_controller():
