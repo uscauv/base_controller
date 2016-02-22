@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # license removed for brevity
 
+import numpy as np
 import serial
 import time
 import rospy
@@ -37,7 +38,14 @@ class BaseController():
         def format_value(val):
             # first [0, 2], then 0 to 200
             return (val + 1) * 200
-        message = bytearray([format_value(x) for x in [mt1, mt2, mt3, mt4, mt5, mt6]])
+
+        # if any value above 1, normalize array so that that value becomes 1 and all others scale proportionally
+        def normalize(arr):
+            if np.max(np.abs(arr)) > 1:
+                return arr / np.max(np.abs(arr))
+            return arr
+
+        message = bytearray([format_value(x) for x in normalize([mt1, mt2, mt3, mt4, mt5, mt6])])
         self.serial.write(message)
         self.serial.flush();
 
