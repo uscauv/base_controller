@@ -37,7 +37,8 @@ class BaseController():
         # start byte = 255, 0 = full reverse, 100 = stopped, 200 = full forward
         def format_value(val):
             # first [0, 2], then 0 to 200
-            return int((val + 1) * 200)
+            val = int((val + 1) * 200)
+            return min(255, max(val, 0))
 
         # if any value above 1, normalize array so that that value becomes 1 and all others scale proportionally
         def normalize(arr):
