@@ -32,12 +32,12 @@ class BaseController():
         mt5 = liny  # y1 motor
         mt6 = -liny  # y2 motor
 
-        print(str(mt1, mt2, mt3, mt4, mt5, mt6))
+        print(str(mt1), str(mt2), str(mt3), str(mt4), str(mt5), str(mt6))
 
         # start byte = 255, 0 = full reverse, 100 = stopped, 200 = full forward
         def format_value(val):
             # first [0, 2], then 0 to 200
-            return (val + 1) * 200
+            return int((val + 1) * 200)
 
         # if any value above 1, normalize array so that that value becomes 1 and all others scale proportionally
         def normalize(arr):
@@ -45,7 +45,8 @@ class BaseController():
                 return arr / np.max(np.abs(arr))
             return arr
 
-        message = bytearray([format_value(x) for x in normalize([mt1, mt2, mt3, mt4, mt5, mt6])])
+        message_bytes = [format_value(x) for x in normalize([mt1, mt2, mt3, mt4, mt5, mt6])]
+        message = bytearray(message_bytes)
         self.serial.write(message)
         self.serial.flush();
 
