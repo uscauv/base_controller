@@ -41,8 +41,8 @@ class PidController():
 class PidControllerNode():
     def __init__(self):
         self.pid_ang_x = PidController(1, 0, 0)
-        self.pid_ang_y = PidController(0.001, 0, 0)
-        self.pid_ang_z = PidController(0.001, 0, 0)
+        self.pid_ang_y = PidController(1, 0, 0)
+        self.pid_ang_z = PidController(1, 0, 0)
 
         # this is used to store the last velocity command
         self.command = None
