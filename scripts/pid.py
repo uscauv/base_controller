@@ -46,6 +46,7 @@ class PidControllerNode():
 
         # this is used to store the last velocity command
         self.command = None
+        self.last_vel_cmd = None
 
         rospy.init_node('base_pid', anonymous=True)
         # listen to velocity command requests
@@ -59,6 +60,7 @@ class PidControllerNode():
     def cmd_callback(self, data):
         print("Got command")
         self.command = data
+        self.last_vel_cmd = data
         self.pid_ang_x.set_setpoint(0)
         self.pid_ang_y.set_setpoint(0)
         self.pid_ang_z.set_setpoint(0)
@@ -70,8 +72,12 @@ class PidControllerNode():
         self.command.angular.x = self.pid_ang_x.update(data.orientation.x)
         self.command.angular.y = self.pid_ang_y.update(data.orientation.y)
         self.command.angular.z = self.pid_ang_z.update(data.orientation.z)
+        if self.last_vel_cmd is not None:
+            self.command.linear.x = self.last_vel_cmd.linear.x
+            self.command.linear.y = self.last_vel_cmd.linear.y
+            self.command.linear.z = self.last_vel_cmd.linear.z
 
-        print("Got IMU update, publishing raw command")
+
 
         self.pub.publish(self.command)
 

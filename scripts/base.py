@@ -17,6 +17,20 @@ class BaseController():
         rospy.Subscriber("/cmd_vel_raw", Twist, self.callback)
         rospy.spin()
 
+
+        # start byte = 255, 0 = full reverse, 100 = stopped, 200 = full forward
+    def format_value(self, val):
+        # first [0, 2], then 0 to 200
+        val = int((val + 1.0)/2.0 * 40 + 80)
+        return min(255, max(val, 0))
+
+        # if any value above 1, normalize array so that that value becomes 1 and all others scale proportionally
+    def normalize(self, arr):
+        if np.max(np.abs(arr)) > 1:
+            return arr / np.max(np.abs(arr))
+        return arr
+
+
     def callback(self, data):
         linx = data.linear.x
         liny = data.linear.y
@@ -25,32 +39,30 @@ class BaseController():
         angy = data.angular.y
         angz = data.angular.z
 
-        mt1 = linx + angz  # x1 motor
-        mt2 = -(linx - angz)  # x2 motor
-        mt3 = linz + angx  # z1 motor
-        mt4 = linz - angx  # z2 motor
-        mt5 = liny  # y1 motor
-        mt6 = -liny  # y2 motor
+	#
+	mt1 = linz-angz #non-connector end, facing up/down
+	mt2 = -(linz+angz) #connector end, facing up/down
+	mt3 = linx + angz #top motor, by killswitch
+	mt4 = liny #looking at the connector end, left side, facing front/back
+	mt5 = (linx-angz) #bottom motor
+	mt6 =  -liny #right side looking at the connector end, facing front/back
+	
+#        mt1 = 0
+#        mt2 = 0
+#        mt3 = 1
+#        mt4 = 0
+#        mt5 = 0
+#        mt6 = 0
 
-        print(str(mt1), str(mt2), str(mt3), str(mt4), str(mt5), str(mt6))
+#        print(str(mt1), str(mt2), str(mt3), str(mt4), str(mt5), str(mt6))
 
-        # start byte = 255, 0 = full reverse, 100 = stopped, 200 = full forward
-        def format_value(val):
-            # first [0, 2], then 0 to 200
-            val = int((val + 1) * 200)
-            return min(255, max(val, 0))
-
-        # if any value above 1, normalize array so that that value becomes 1 and all others scale proportionally
-        def normalize(arr):
-            if np.max(np.abs(arr)) > 1:
-                return arr / np.max(np.abs(arr))
-            return arr
-
-        message_bytes = [format_value(x) for x in normalize([mt1, mt2, mt3, mt4, mt5, mt6])]
+        message_bytes = [self.format_value(x) for x in self.normalize([mt1, mt2, mt3, mt4, mt5, mt6])]
+	message_bytes.insert(0, 255)
+	print(self.normalize([mt1,mt2,mt3,mt4,mt5,mt6]))
+	print(message_bytes)
         message = bytearray(message_bytes)
         self.serial.write(message)
         self.serial.flush();
-
 
 def base_controller():
     BaseController()
