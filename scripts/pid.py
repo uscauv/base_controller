@@ -40,9 +40,9 @@ class PidController():
 
 class PidControllerNode():
     def __init__(self):
-        self.pid_ang_x = PidController(1, 0, 0)
-        self.pid_ang_y = PidController(1, 0, 0)
-        self.pid_ang_z = PidController(1, 0, 0)
+        self.pid_ang_x = PidController(2, 0, 1)
+        self.pid_ang_y = PidController(2, 0, 1)
+        self.pid_ang_z = PidController(2, 0, 1)
 
         # this is used to store the last velocity command
         self.command = None
@@ -69,9 +69,10 @@ class PidControllerNode():
         self.command = Twist()
         # we only modify angular values because this node is simply responsible for stabilizing the sub
         # making sure that the linear velocities are also accurate is outside the scope of this node
-        self.command.angular.x = self.pid_ang_x.update(data.orientation.x)
-        self.command.angular.y = self.pid_ang_y.update(data.orientation.y)
-        self.command.angular.z = self.pid_ang_z.update(data.orientation.z)
+        self.command.angular.x = -self.pid_ang_x.update(data.orientation.x)
+        self.command.angular.y = -self.pid_ang_y.update(data.orientation.y)
+       # self.command.angular.z = -self.pid_ang_z.update(data.orientation.z)
+        self.command.angular.z = 0 #-self.pid_ang_z.update(data.orientation.z)
         if self.last_vel_cmd is not None:
             self.command.linear.x = self.last_vel_cmd.linear.x
             self.command.linear.y = self.last_vel_cmd.linear.y

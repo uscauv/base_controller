@@ -21,7 +21,7 @@ class BaseController():
         # start byte = 255, 0 = full reverse, 100 = stopped, 200 = full forward
     def format_value(self, val):
         # first [0, 2], then 0 to 200
-        val = int((val + 1.0)/2.0 * 40 + 80)
+        val = int((val + 1.0)/2.0 * 200 + 0)
         return min(255, max(val, 0))
 
         # if any value above 1, normalize array so that that value becomes 1 and all others scale proportionally
@@ -32,29 +32,29 @@ class BaseController():
 
 
     def callback(self, data):
-        linx = data.linear.x
-        liny = data.linear.y
-        linz = data.linear.z
-        angx = data.angular.x
-        angy = data.angular.y
-        angz = data.angular.z
+        linx = float(data.linear.x)
+        liny = float(data.linear.y)
+        linz = float(data.linear.z)
+        angx = float(data.angular.x)
+        angy = float(data.angular.y)
+        angz = float(data.angular.z)
 
 	#
-	mt1 = linz-angz #non-connector end, facing up/down
-	mt2 = -(linz+angz) #connector end, facing up/down
-	mt3 = linx + angz #top motor, by killswitch
+	mt1 = linz-angy #non-connector end, facing up/down
+	mt2 = -(linz+angy) #connector end, facing up/down
+	mt3 = linx + angy #top motor, by killswitch
 	mt4 = liny #looking at the connector end, left side, facing front/back
-	mt5 = (linx-angz) #bottom motor
+	mt5 = (linx-angx) #bottom motor
 	mt6 =  -liny #right side looking at the connector end, facing front/back
 	
 #        mt1 = 0
-#        mt2 = 0
-#        mt3 = 1
+#        mt2 = .7
+       # mt3 = 0
 #        mt4 = 0
 #        mt5 = 0
 #        mt6 = 0
 
-#        print(str(mt1), str(mt2), str(mt3), str(mt4), str(mt5), str(mt6))
+        print(str(mt1), str(mt2), str(mt3), str(mt4), str(mt5), str(mt6))
 
         message_bytes = [self.format_value(x) for x in self.normalize([mt1, mt2, mt3, mt4, mt5, mt6])]
 	message_bytes.insert(0, 255)
