@@ -40,6 +40,10 @@ class PidController():
 
 class PidControllerNode():
     def __init__(self):
+	
+
+	#PID values. We only need angular dampening because there are not any major issues with linear performance in the water. Change these values as you need to, based on the performance of the robot.
+	#if you don't know what a PID is, or how it works, a quick google search would be time well invested
         self.pid_ang_x = PidController(2, 0, 1)
         self.pid_ang_y = PidController(2, 0, 1)
         self.pid_ang_z = PidController(2, 0, 1)

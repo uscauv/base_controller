@@ -39,7 +39,11 @@ class BaseController():
         angy = float(data.angular.y)
         angz = float(data.angular.z)
 
-	#
+	#calculations based on desired linear and angular velocities, used to determine what speed each motor should be at.
+	#each mtX represents one motor, and the value it gets set to will determine its speed. The range at which they work are -1 to 1. -1 is full power backwards, 0 is stop, 1 is full power forwards.
+	#DO NOT RUN MOTORS AT FULL POWER OUT OF THE WATER OR FOR EXTENDED PERIODS OF TIME IN THE WATER
+	#if one motor is too powerful, feel free to nerf it by multiplying it by some decimal (i.e. 0.5)
+
 	mt1 = linz-angy #non-connector end, facing up/down
 	mt2 = -(linz+angy) #connector end, facing up/down
 	mt3 = linx + angy #top motor, by killswitch
